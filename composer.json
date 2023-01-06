@@ -1,0 +1,22 @@
+{
+    "name": "thefunpower/vue",
+    "type": "library",
+    "description": "sample vue",
+    "keywords": ["php"],
+    "license": "GNU",
+    "authors": [
+        {
+            "name": "ken.sun",
+            "email": "sunkangchina@163.com" 
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    }, 
+    "autoload": { 
+        "files": [
+            "./yii1-javascript-encode.php",
+            "./vue.php"
+        ]
+    }
+}
