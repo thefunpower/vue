@@ -3,7 +3,7 @@
     "type": "library",
     "description": "sample vue",
     "keywords": ["php"],
-    "license": "GNU",
+    "license": "MIT",
     "authors": [
         {
             "name": "ken.sun",
