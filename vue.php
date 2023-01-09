@@ -171,6 +171,7 @@ class Vue
             $methods_str .= $br . $k .  php_to_js($v) .",";
         }
         foreach ($this->watch as $k => $v) { 
+            $v = str_replace("js:","",$v);
             $this->parse_v($k,$v);
             $watch_str .= $br . $k . php_to_js($v) . ",";
         }
@@ -215,14 +216,18 @@ class Vue
     }
 
     public function parse_v(&$k,&$v){ 
+        $t_v = trim($v);
         if(strpos($k,'(') === false && substr($k,-1) != ':'){
             $k = $k.':';
         } 
-        if(strpos($v,'{') === false){
+        if(substr($t_v,0,2) == '{{'){
+            $v = substr($t_v,2,-2); 
+        }
+        if(substr($t_v,0,1) != '{'){
             $v = "{".$v."}"; 
-        } 
+        }         
         if(is_string($v) && substr($v,0,3) != 'js:'){ 
-            $v = "js:{".$v."}"; 
+            $v = "js:".$v; 
         }
     }
 
@@ -534,7 +539,7 @@ function vue_message(){
 /**
 * loading效果
 */
-function vue_loading($name,$txt){
+function vue_loading($name='load',$txt){
     return "const ".$name." = _this.\$loading({
           lock: true,
           text: '".$txt."',
