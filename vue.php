@@ -100,6 +100,11 @@ class Vue
     }
     public  function data($key, $val)
     {
+        if(substr($val,0,3) != 'js:'){
+            if($val == "[]" || $val == "{}"){
+                $val = "js:".$val;
+            }
+        }
         $this->data[$key] = $val;
     }
 
