@@ -42,6 +42,7 @@ class Vue
     public $add_url;
     public $edit_url;
     public $id   = "#app";
+    //默认加载方法load()
     public $load_name   = "load";
     public $data = [
         "is_show" => false,
@@ -209,7 +210,7 @@ class Vue
         }       
         $code = $vars . $js; 
         $name = $this->load_name;
-        if($name != 'load'){
+        if($name && $name != 'load'){
             $code = str_replace("this.load()","this.".$name."()",$code);    
         } 
         return $code;
@@ -306,7 +307,7 @@ class Vue
                 }
             });");
         }else{
-            $this->method('load()', "js:");
+            //$this->method('load()', "js:");
         }
         $after_save = $this->after_save;
         $after_save_str = '';
@@ -526,6 +527,64 @@ class Vue
           });
         ");
     }
+    /**
+     * 输出element el-pager
+     * 
+     * @param $load  load或load()
+     * @param $where 分页传参数
+     * @param $arr   el-pager参数 ['@size-change'=>'',':page-sizes']
+     */
+    public function pager($load='load',$where = 'where',$arr = [])
+    {
+        if(!$arr['@size-change']){
+            $arr['@size-change'] = 'page_size_change';
+        } 
+        if(substr($load,-1) != ')'){
+            $load = $load."()";
+        }
+        $this->method($arr['@size-change']."(val)"," 
+            this.".$where.".page= 1;
+            this.".$where.".per_page = val;
+            this.".$load.";
+         ");
+ 
+        if(!$arr['@current-change']){
+            $arr['@current-change'] = 'page_change';
+        }
+        $this->method($arr['@current-change']."(val)"," 
+            this.".$where.".page = val;
+            this.".$load.";
+        ");
+        if(!$arr[':page-sizes']){
+            $arr[':page-sizes'] = json_encode(page_size_array());
+        }
+        if(!$arr[':current-page']){
+            $arr[':current-page'] = $where.'.page';
+        }
+        if(!$arr[':page-size']){
+            $arr[':page-size'] = $where.'.per_page';
+        }
+        if(!$arr['layout']){
+            $arr['layout'] = 'total, sizes, prev, pager, next, jumper';
+        }
+        if(!$arr[':total']){
+            $arr[':total'] = 'total';
+        }
+        if(!$arr['background']){
+            $arr['background'] = '';
+        }
+        
+        $attr = '';
+        foreach($arr as $k=>$v){
+            if($v){
+                $attr .= $k."='".$v."' ";
+            }else{
+                $attr .= $k.$v." ";    
+            }   
+            $attr .= "\n";           
+        }  
+        return '<el-pagination '.$attr.'></el-pagination>'."\n" ;
+    }
 
 }
 
@@ -547,3 +606,4 @@ function vue_loading($name='load',$txt){
           background: 'rgba(0, 0, 0, 0.7)'
     }); \n";
 }
+
