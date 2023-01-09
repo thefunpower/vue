@@ -161,12 +161,17 @@ class Vue
             $this->methods["load_common()"] = "js:{}";
         }
         foreach ($this->methods as $k => $v) {
-            $methods_str .= $br . $k . "{" . php_to_js($v) . "},";
+            $this->parse_v($k,$v);
+            $methods_str .= $br . $k .  php_to_js($v) .",";
         }
-        foreach ($this->watch as $k => $v) {
+        foreach ($this->watch as $k => $v) { 
+            $this->parse_v($k,$v);
             $watch_str .= $br . $k . php_to_js($v) . ",";
         }
         foreach ($this->mounted as $k => $v) {
+            if(is_string($v) && substr($v,0,3) != 'js:'){ 
+                $v = "js:".$v.""; 
+            }
             $mounted_str .= $br .  php_to_js($v) . "";
         }
 
@@ -203,6 +208,20 @@ class Vue
         return $code;
     }
 
+    public function parse_v(&$k,&$v){
+        $v = str_replace("js:","",$v); 
+        if(strpos($k,'(') === false && substr($k,-1) != ':'){
+            $k = $k.':';
+        } 
+        if(strpos($v,'{') === false){
+            $v = "{".$v."}"; 
+        } 
+        if(is_string($v) && substr($v,0,3) != 'js:'){ 
+            $v = "js:{".$v."}"; 
+        }
+        $v = str_replace("{{","{",$v);
+        $v = str_replace("}}","}",$v);  
+    }
 
     public function init()
     {
