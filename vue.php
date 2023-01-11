@@ -99,12 +99,39 @@ class Vue
     public function data_form($key,$val){
         $this->data_form[$key] = $val;
     }
+    /**
+    * 定义data
+    * $vue->data("object","js:{}");
+    * $vue->data("arr","[]");
+    * $vue->data("aa",500);
+    * $vue->data("bb",'
+    * {
+    *     s:1,
+    *     ss:3
+    * }
+    * ');
+    * $vue->data("true",true);
+    * $vue->data("false",false);
+    * $vue->data("json",json_encode(['a'=>1]));
+    * $vue->data("json1",['a','b']); 
+    */
     public  function data($key, $val)
-    {
-        if(substr($val,0,3) != 'js:'){
-            if($val == "[]" || $val == "{}"){
+    { 
+        if(!is_array($val)){
+            $is_json = json_decode($val,true); 
+            if(is_array($is_json)){
+                $val = $is_json;
+            } 
+        }   
+        if(is_array($val)){
+            $val = "js:".json_encode($val);
+        }else  if(is_string($val) && substr($val,0,3) != 'js:'){  
+            $trim = trim($val);
+            $trim = str_replace("\n","",$trim);
+            $trim = str_replace(" ","",$trim);
+            if(substr($trim , 0,1) == '{'){
                 $val = "js:".$val;
-            }
+            } 
         }
         $this->data[$key] = $val;
     }
