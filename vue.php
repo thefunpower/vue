@@ -46,19 +46,19 @@ class Vue
     public $load_name   = "load";
     public $data = [
         "is_show" => false,
-        'where' => "js:{per_page:20}",
-        'lists' => "js:[]",
+        'where' => "{per_page:20}",
+        'lists' => "[]",
         'page' => "1",
         'total' => 0,
-        'form' => "js:{}",
-        'node' => "js:{}",
-        'row' => "js:{}",
+        'form' => "{}",
+        'node' => "{}",
+        'row' => "{}",
         'loading'=>true,
     ];
     public $page_data = [
         "is_show" => false,
-        'where' => "js:{per_page:20}",
-        'lists' => "js:[]",
+        'where' => "{per_page:20}",
+        'lists' => "[]",
         'page' => "1",
         'total' => 0,
         'form' => "js:{}",
@@ -74,29 +74,29 @@ class Vue
     public $create_update_load = [];
 
     public $page_method = [
-        'page_size_change(val)' => "js:this.where.page= 1;this.where.per_page = val;this.load();",
-        'page_change(val)' => "js:this.where.page = val;this.load();",
+        'page_size_change(val)' => "this.where.page= 1;this.where.per_page = val;this.load();",
+        'page_change(val)' => "this.where.page = val;this.load();",
     ];
 
     public $reset_method = [
-        'reload()' => "js:this.where.page = 1;this.loading=true;this.load();",
-        'reset()' => "js:this.where = {};this.loading=true;this.load();",
+        'reload()' => "this.where.page = 1;this.loading=true;this.load();",
+        'reset()' => "this.where = {};this.loading=true;this.load();",
     ];
 
     public $add_method = ''; 
     public $edit_method = '';
     public $tree_field = 'pid';
     public $tree_method = [
-        'select_click(data)' => "js:{ 
+        'select_click(data)' => " 
             this.node = data;
             this.form.pid = data.id;
             this.form._pid_name = data.label;
             this.\$refs['pid'].\$el.click();
-        }"
+       "
     ];
     public $data_form;
 
-    public function data_form($key,$val){
+    public function data_form($key,$val){ 
         $this->data_form[$key] = $val;
     }
     /**
@@ -116,7 +116,11 @@ class Vue
     * $vue->data("json1",['a','b']); 
     */
     public  function data($key, $val)
-    { 
+    {   
+        $this->data[$key] = $val;
+    }
+
+    public function parse_data($val){  
         if(!is_array($val)){
             $is_json = json_decode($val,true); 
             if(is_array($is_json)){
@@ -124,16 +128,16 @@ class Vue
             } 
         }   
         if(is_array($val)){
-            $val = "js:".json_encode($val);
+            
         }else  if(is_string($val) && substr($val,0,3) != 'js:'){  
             $trim = trim($val);
             $trim = str_replace("\n","",$trim);
             $trim = str_replace(" ","",$trim);
-            if(substr($trim , 0,1) == '{'){
-                $val = "js:".$val;
+            if(substr($trim , 0,1) == '{' || substr($trim , 0,1) == '['){
+               $val = "js:".$val;
             } 
-        }
-        $this->data[$key] = $val;
+        }        
+        return $val;
     }
 
     public  function method($name, $val)
@@ -270,21 +274,22 @@ class Vue
         if($this->data_form){
             $form = [];
             foreach($this->data_form as $k=>$v){ 
-                $v  = php_to_js($v); 
+                $v = $this->parse_data($v);
+                $val  = php_to_js($v); 
                 $data_form_add.=" 
-                     this.\$set(this.form,'".$k."',$v);\n   
+                     this.\$set(this.form,'".$k."',$val);\n   
                 ";
                 $data_form_update.="
                     if(!row.$k){
-                        this.\$set(this.form,'".$k."',$v);\n    
+                        this.\$set(this.form,'".$k."',$val);\n    
                     }                    
-                ";
+                "; 
                 $form[$k] = $v; 
-            }
-            $this->data['form'] = "js:".json_encode($form);
+            }      
+            $this->data['form'] = $form;
         }
         $this->add_method = $this->add_method?:[
-            "show()" => "js:
+            "show()" => " 
                  this.is_show = true;
                  this.form = {};".$data_form_add."
                  ".$this->loadEditorAdd()."
@@ -292,13 +297,17 @@ class Vue
         ];
 
         $this->edit_method = $this->edit_method?:[
-            "update(row)" => "js:{ 
+            "update(row)" => " 
                 this.is_show = true;
                 this.form = row;  ".$data_form_update."
                 ".$this->loadEditorUpdate()."
-            }"
+            "
         ];
-        
+
+        foreach($this->data as $k=>$vv){  
+            $this->data[$k] = $this->parse_data($vv);
+        } 
+         
         foreach ($opt as $k => $v) {
             if ($v) {
                 if ($this->opt_method[$k]) {
