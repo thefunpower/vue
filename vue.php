@@ -121,6 +121,9 @@ class Vue
     }
 
     public function parse_data($val){  
+        if($val == '{}' || $val == '[]'){
+            return "js:".$val;
+        }
         if(!is_array($val)){
             $is_json = json_decode($val,true); 
             if(is_array($is_json)){
