@@ -629,10 +629,27 @@ class Vue
 
 
 /**
-* vue message
+* vue_message
+* 支持参数 
+* vue_message(['offset'=>'200px','msg'=>'test','type'=>'error'])
 */
-function vue_message(){
-    return "_this.\$message({type:res.type,message:res.msg});\n";
+function vue_message($opt = []){
+    if($opt['msg'] && $opt['type']){
+        $vue_option['message'] = $opt['msg'];
+        $vue_option['type'] = $opt['type'];
+        unset($opt['msg'],$opt['type']);    
+    }else{
+        $vue_option = [
+            'type'=>'js:res.type',
+            'message'=>'js:res.msg',
+        ];
+    }
+    if($opt){
+        foreach($opt as $k=>$v){
+            $vue_option[$k] = $v;
+        }
+    }
+    return "_this.\$message(".php_to_js($vue_option).");\n";
 }
 /**
 * loading效果
