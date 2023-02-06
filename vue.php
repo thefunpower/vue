@@ -14,6 +14,11 @@
  */
 class Vue
 {
+    /*
+    * $config['vue_encodejs'] = true;
+    * 依赖 yarn add --dev javascript-obfuscator
+    */
+    public $encodejs = false;
     public $opt = [
         'is_editor' => false,
         'is_page'  => false,
@@ -95,7 +100,12 @@ class Vue
        "
     ];
     public $data_form;
-
+    public function __construct(){
+        global $config;
+        if(isset($config['vue_encodejs'])){
+            $this->encodejs = $config['vue_encodejs'];    
+        }        
+    }
     public function data_form($key,$val){ 
         $this->data_form[$key] = $val;
     }
@@ -247,6 +257,26 @@ class Vue
         if($name && $name != 'load'){
             $code = str_replace("this.load()","this.".$name."()",$code);    
         } 
+        if($this->encodejs){
+            $uri = $_SERVER['REQUEST_URI'];
+            $js_file = '/dist/js/vue/'.md5($uri).'.js';
+            $js_file_path = PATH.$js_file;
+            $dir = get_dir($js_file_path);
+            if(!is_dir($dir)){mkdir($dir,0777,true);}
+            if(!file_exists($js_file_path)){
+                file_put_contents($js_file_path,$code);    
+                $obfuscator_bin = $config['obfuscator']?:PATH.'node_modules/javascript-obfuscator/bin/javascript-obfuscator';
+                $run_cmd = $obfuscator_bin." $js_file_path --output $js_file_path"; 
+                exec($run_cmd);
+            } 
+            return " 
+            (function() {
+              var vue_php_auto = document.createElement('script');
+              vue_php_auto.src = '".$js_file."';
+              var s = document.getElementsByTagName('body')[0]; 
+              s.parentNode.insertBefore(vue_php_auto, s);
+            })();"; 
+        }
         return $code;
     }
 
@@ -478,10 +508,12 @@ class Vue
                     mode: 'simple',  
                 });   
                 ";    
-            }
-            
+            } 
+
             return $js;
     }
+
+
     /**
     日期区间：
     <el-date-picker @change="reload" v-model="where.date" value-format="yyyy-MM-dd" :picker-options="pickerOptions" size="medium" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
@@ -629,27 +661,10 @@ class Vue
 
 
 /**
-* vue_message
-* 支持参数 
-* vue_message(['offset'=>'200px','msg'=>'test','type'=>'error'])
+* vue message
 */
-function vue_message($opt = []){
-    if($opt['msg'] && $opt['type']){
-        $vue_option['message'] = $opt['msg'];
-        $vue_option['type'] = $opt['type'];
-        unset($opt['msg'],$opt['type']);    
-    }else{
-        $vue_option = [
-            'type'=>'js:res.type',
-            'message'=>'js:res.msg',
-        ];
-    }
-    if($opt){
-        foreach($opt as $k=>$v){
-            $vue_option[$k] = $v;
-        }
-    }
-    return "_this.\$message(".php_to_js($vue_option).");\n";
+function vue_message(){
+    return "_this.\$message({type:res.type,message:res.msg});\n";
 }
 /**
 * loading效果
