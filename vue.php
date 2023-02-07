@@ -264,12 +264,8 @@ class Vue
             $js_file = '/dist/js/vue/'.md5($uri).'.js';
             $js_file_path = PATH.$js_file;
             $dir = get_dir($js_file_path);
-            if(!is_dir($dir)){mkdir($dir,0777,true);}
-            if(!file_exists($js_file_path)){
-                $is_write = true;
-            } else{
-                
-            } 
+            if(!is_dir($dir)){mkdir($dir,0777,true);} 
+            $is_write = true; 
             $ignore_encode = $config['vue_encodejs_ignore']?:['/plugins/config/config.php'];
             foreach($ignore_encode as $v){
                 if(strpos($uri,$v) !== false){
