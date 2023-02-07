@@ -572,7 +572,28 @@ class Vue
                         start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
                         picker.\$emit('pick', [start, end]);
                     }
-                }]
+                }, {
+                    text: '本年',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setMonth(0);
+                        start.setDate(1);
+                        picker.\$emit('pick', [start, end]);
+                    }
+                },
+                {
+                    text: '全部',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setYear(2000);
+                        start.setMonth(0);
+                        start.setDate(1);
+                        picker.\$emit('pick', [start, end]);
+                    }
+                }
+            ]
             }";
     }
 
