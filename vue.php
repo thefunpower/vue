@@ -273,8 +273,7 @@ class Vue
             (function() {
               var vue_php_auto = document.createElement('script');
               vue_php_auto.src = '".$js_file."';
-              var s = document.getElementsByTagName('body')[0]; 
-              s.parentNode.insertBefore(vue_php_auto, s);
+              document.body.insertBefore(vue_php_auto, document.body.lastChild);
             })();"; 
         }
         return $code;
