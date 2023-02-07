@@ -16,6 +16,7 @@ class Vue
 {
     /*
     * $config['vue_encodejs'] = true;
+    * $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
     * 依赖 yarn add --dev javascript-obfuscator
     */
     public $encodejs = false;
@@ -196,6 +197,7 @@ class Vue
 
     public  function run()
     {
+        global $config;
         $this->init();
         $data    = php_to_js($this->data);
         $created = "";
@@ -264,11 +266,23 @@ class Vue
             $dir = get_dir($js_file_path);
             if(!is_dir($dir)){mkdir($dir,0777,true);}
             if(!file_exists($js_file_path)){
+                $is_write = true;
+            } else{
+                
+            } 
+            $ignore_encode = $config['vue_encodejs_ignore']?:['/plugins/config/config.php'];
+            foreach($ignore_encode as $v){
+                if(strpos($uri,$v) !== false){
+                    $is_write = false;
+                    break;
+                }
+            } 
+            if($is_write){
                 file_put_contents($js_file_path,$code);    
                 $obfuscator_bin = $config['obfuscator']?:PATH.'node_modules/javascript-obfuscator/bin/javascript-obfuscator';
                 $run_cmd = $obfuscator_bin." $js_file_path --output $js_file_path"; 
                 exec($run_cmd);
-            } 
+            }
             return " 
             (function() {
               var vue_php_auto = document.createElement('script');
