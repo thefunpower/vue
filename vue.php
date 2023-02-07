@@ -278,17 +278,21 @@ class Vue
                 }
             } 
             if($is_write){
-                file_put_contents($js_file_path,$code);    
-                $obfuscator_bin = $config['obfuscator']?:PATH.'node_modules/javascript-obfuscator/bin/javascript-obfuscator';
-                $run_cmd = $obfuscator_bin." $js_file_path --output $js_file_path"; 
-                exec($run_cmd);
+                if(!file_exists($js_file_path)){
+                    file_put_contents($js_file_path,$code);    
+                    $obfuscator_bin = $config['obfuscator']?:PATH.'node_modules/javascript-obfuscator/bin/javascript-obfuscator';
+                    $run_cmd = $obfuscator_bin." $js_file_path --output $js_file_path"; 
+                    exec($run_cmd);
+                }
+                return " 
+                (function() {
+                  var vue_php_auto = document.createElement('script');
+                  vue_php_auto.src = '".$js_file."';
+                  document.body.insertBefore(vue_php_auto, document.body.lastChild);
+                })();"; 
+            } else{
+                return $code;
             }
-            return " 
-            (function() {
-              var vue_php_auto = document.createElement('script');
-              vue_php_auto.src = '".$js_file."';
-              document.body.insertBefore(vue_php_auto, document.body.lastChild);
-            })();"; 
         }
         return $code;
     }
