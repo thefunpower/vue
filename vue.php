@@ -199,6 +199,7 @@ class Vue
     {
         global $config;
         $this->init();
+        $this->data['_vue_message'] = false;
         $data    = php_to_js($this->data);
         $created = "";
         foreach ($this->created_js as $v) {
@@ -289,6 +290,9 @@ class Vue
             } else{
                 return $code;
             }
+        }
+        if(function_exists('do_action')){
+            do_action("vue",$code);
         }
         return $code;
     }
@@ -698,7 +702,14 @@ class Vue
 * vue message
 */
 function vue_message(){
-    return "_this.\$message({type:res.type,message:res.msg});\n";
+    return "
+    if(!app._vue_message){
+        app._vue_message = true;
+        _this.\$message({type:res.type,message:res.msg,onClose:function(){
+            app._vue_message = false;
+        }});        
+    }
+    \n";
 }
 /**
 * loading效果
