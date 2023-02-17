@@ -705,7 +705,7 @@ function vue_message(){
     return "
     if(!app._vue_message){
         app._vue_message = true;
-        _this.\$message({type:res.type,message:res.msg,onClose:function(){
+        _this.\$message({duration:1000,type:res.type,message:res.msg,onClose:function(){
             app._vue_message = false;
         }});        
     }
