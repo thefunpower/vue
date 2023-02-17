@@ -1,7 +1,7 @@
 {
     "name": "thefunpower/vue",
     "type": "library",
-    "description": "sample vue",
+    "description": "封装VUE是混编PHP代码使用Element UI2.15.13的前提",
     "keywords": ["php"],
     "license": "MIT",
     "authors": [
