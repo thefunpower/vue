@@ -228,8 +228,7 @@ class Vue
                 $v = "js:".$v.""; 
             }
             $mounted_str .= $br .  php_to_js($v) . "";
-        }
-
+        }  
         $js = "
             var _this;
             var app = new Vue({
@@ -246,8 +245,8 @@ class Vue
                     " . $watch_str . "
                 },
                 methods:{" . $methods_str . "$br2}
-            });
-        ";
+            }); 
+        "; 
         $vars = '';
         $e = self::$_editor; 
         if($e){
@@ -619,19 +618,48 @@ class Vue
     * misc('sortable'); 
     * $vue->sort(".sortable1 tbody","_this.form.xcx_banner");
     */
-    public function sort($element,$change_obj){
+    public function sort($element,$change_obj='lists_sort',$options = []){
+        $error    = $options['error'];
+        $success  = $options['success'];
+        $ajax_url = $options['ajax_url']; 
         $sortable = "sortable".mt_rand(1000,9999);
         $this->mounted('',"js:this.".$sortable."();");
         $this->method($sortable."()","js: 
           Sortable.create(document.querySelector('".$element."'),{
             onEnd(eve) { 
                   let a = eve.newIndex;
-                  let b = eve.oldIndex;
-                  //把b换成a,a换成b
-                  let a1 = ".$change_obj."[a];
-                  let b1 = ".$change_obj."[b]; 
-                  ".$change_obj."[a] = b1;
-                  ".$change_obj."[b] = a1; 
+                  let b = eve.oldIndex; 
+                  let new_d = {};  
+                  let old_d = {};   
+                  let new_index = '';
+                  let old_index = '';
+                  for(let i in _this.".$change_obj."){
+                    if(i == a){
+                        new_index = i;
+                        new_d = _this.".$change_obj."[i];
+                    }
+                    if(i == b){
+                        old_index = i;
+                        old_d =  _this.".$change_obj."[i];
+                    }
+                  }  
+                  if(new_d.hasOwnProperty('pid')){
+                      if(new_d.pid != old_d.pid){
+                        _this.\$message.error('只能同级排序，操作失败'); 
+                        ".$error."
+                        return false;
+                      }
+                  } 
+                  _this.".$change_obj."[new_index] = old_d;
+                  _this.".$change_obj."[old_index] = new_d;  
+                  ajax('".$ajax_url."',{
+                    data:_this.".$change_obj.",
+                    page:app.page,
+                    per_page:app.where.per_page,
+                    total:app.total,
+                    },function(res){
+                      ".$success."
+                  }); 
             }
           });
         ");
@@ -702,7 +730,7 @@ class Vue
 * vue message
 */
 function vue_message(){
-    return "
+    return "  
     if(!app._vue_message){
         app._vue_message = true;
         _this.\$message({duration:1000,type:res.type,message:res.msg,onClose:function(){
