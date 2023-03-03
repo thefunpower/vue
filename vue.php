@@ -625,7 +625,8 @@ class Vue
         $sortable = "sortable".mt_rand(1000,9999);
         $this->mounted('',"js:this.".$sortable."();");
         $this->method($sortable."()","js: 
-          Sortable.create(document.querySelector('".$element."'),{
+          Sortable.create(document.querySelector('".$element."'),{     
+            handler:'.handler', 
             onEnd(eve) { 
                   let a = eve.newIndex;
                   let b = eve.oldIndex; 
@@ -652,8 +653,13 @@ class Vue
                   } 
                   _this.".$change_obj."[new_index] = old_d;
                   _this.".$change_obj."[old_index] = new_d;  
+                  let full_data = _this.".$change_obj.";
+                  let dd = [];
+                  for(let i in full_data){
+                    dd.push({id:full_data[i].id,sort:full_data[i].sort});
+                  }
                   ajax('".$ajax_url."',{
-                    data:_this.".$change_obj.",
+                    data:dd,
                     page:app.page,
                     per_page:app.where.per_page,
                     total:app.total,
