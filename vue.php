@@ -626,7 +626,7 @@ class Vue
         $this->mounted('',"js:this.".$sortable."();");
         $this->method($sortable."()","js: 
           Sortable.create(document.querySelector('".$element."'),{     
-            handler:'.handler', 
+            handle:'.handler', 
             onEnd(eve) { 
                   let a = eve.newIndex;
                   let b = eve.oldIndex; 
