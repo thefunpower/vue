@@ -20,6 +20,7 @@ class Vue
     * 依赖 yarn add --dev javascript-obfuscator
     */
     public $encodejs = false;
+    public $upload_url = '/admin/upload/index';
     public $opt = [
         'is_editor' => false,
         'is_page'  => false,
@@ -503,7 +504,7 @@ class Vue
                     placeholder: '',
                     MENU_CONF: {
                       uploadImage: {
-                        fieldName: 'file',server: '/api/admin/upload.php?is_editor=1'
+                        fieldName: 'file',server: '".$this->upload_url."?is_editor=1'
                       }
                     }, 
                     onChange(editor) {  
