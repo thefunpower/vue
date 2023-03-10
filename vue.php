@@ -619,45 +619,29 @@ class Vue
     * misc('sortable'); 
     * $vue->sort(".sortable1 tbody","_this.form.xcx_banner");
     */
-    public function sort($element,$change_obj='lists_sort',$options = []){
-        $error    = $options['error'];
+    public function sort($element,$change_obj='lists_sort',$options = []){ 
         $success  = $options['success'];
         $ajax_url = $options['ajax_url']; 
         $sortable = "sortable".mt_rand(1000,9999);
         $this->mounted('',"js:this.".$sortable."();");
         $this->method($sortable."()","js: 
+          /**
+          * creator wechat: sunkangchina 
+          * this is for commercial license,you can't remove it.
+          */
           Sortable.create(document.querySelector('".$element."'),{     
             handle:'.handler', 
-            onEnd(eve) { 
-                  let a = eve.newIndex;
-                  let b = eve.oldIndex; 
-                  let new_d = {};  
-                  let old_d = {};   
-                  let new_index = '';
-                  let old_index = '';
-                  for(let i in _this.".$change_obj."){
-                    if(i == a){
-                        new_index = i;
-                        new_d = _this.".$change_obj."[i];
-                    }
-                    if(i == b){
-                        old_index = i;
-                        old_d =  _this.".$change_obj."[i];
-                    }
-                  }  
-                  if(new_d.hasOwnProperty('pid')){
-                      if(new_d.pid != old_d.pid){
-                        _this.\$message.error('只能同级排序，操作失败'); 
-                        ".$error."
-                        return false;
-                      }
-                  } 
-                  _this.".$change_obj."[new_index] = old_d;
-                  _this.".$change_obj."[old_index] = new_d;  
-                  let full_data = _this.".$change_obj.";
+            onEnd(eve) {   
+                  let newIndex = eve.newIndex;
+                  let oldIndex = eve.oldIndex;   
+                  let list = app.".$change_obj."; 
+                  let old = list[oldIndex]; 
+                  //删除老数组 
+                  list.splice(oldIndex,1);
+                  list.splice(newIndex,0,old); 
                   let dd = [];
-                  for(let i in full_data){
-                    dd.push({id:full_data[i].id,sort:full_data[i].sort});
+                  for(let i in list){ 
+                    dd.push({id:list[i].id});
                   }
                   ajax('".$ajax_url."',{
                     data:dd,
