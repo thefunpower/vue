@@ -733,7 +733,7 @@ function vue_message(){
 /**
 * loading效果
 */
-function vue_loading($name='load',$txt){
+function vue_loading($name='load',$txt = '加载中'){
     return "const ".$name." = _this.\$loading({
           lock: true,
           text: '".$txt."',
