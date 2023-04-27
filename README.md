@@ -3,4 +3,4 @@
 
 ### 开源协议 
 
-[LICENSE](LICENSE.md)
+The [MIT](LICENSE) License (MIT)
