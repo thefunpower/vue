@@ -1,9 +1,7 @@
 <?php
 /*
     Copyright (c) 2021-2031, All rights reserved.
-    This is NOT a freeware, use is subject to license terms 
-    Connect Email: sunkangchina@163.com 
-    Code Vesion: v1.0.x
+    This is MIT LICENSE 
 */
 
 /**
@@ -14,6 +12,11 @@
  */
 class Vue
 {
+    /**
+    * vue版本，默认为2
+    * 当为3时，请加载vue3的JS，如 https://unpkg.com/vue@3/dist/vue.global.js
+    */
+    public $version = 2;
     /*
     * $config['vue_encodejs'] = true;
     * $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
@@ -211,7 +214,7 @@ class Vue
         $mounted_str = "";
         $br = "\n\t\t\t\t\t";
         $br2 = "\n\t\t\t\t";
-        if (!$this->methods["load_common()"]) {
+        if (!isset($this->methods["load_common()"])) {
             $this->methods["load_common()"] = "js:{}";
         }
         foreach ($this->methods as $k => $v) {
@@ -247,7 +250,27 @@ class Vue
                 },
                 methods:{" . $methods_str . "$br2}
             }); 
-        "; 
+        ";  
+        if($this->version == 3){
+            $js = "
+                var _this;
+                const { createApp } = Vue;
+                var app = createApp({ 
+                    data(){ return " . $data . "},
+                    created(){
+                        _this = this;
+                        " . $created . "
+                    },
+                    mounted(){
+                        " . $mounted_str . "
+                    },
+                    watch: {
+                        " . $watch_str . "
+                    },
+                    methods:{" . $methods_str . "$br2}
+                }).mount('".$this->id."'); 
+            ";  
+        } 
         $vars = '';
         $e = self::$_editor; 
         if($e){
