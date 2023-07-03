@@ -80,11 +80,11 @@ class Vue
     public $create_update_load = [];
     public $page_method = [
         'page_size_change(val)' => "this.where.page= 1;this.where.per_page = val;this.load();",
-        'page_change(val)' => "this.where.page = val;this.load();",
+        'page_change(val)'      => "this.where.page = val;this.load();",
     ];
     public $reset_method = [
         'reload()' => "this.where.page = 1;this.loading=true;this.load();",
-        'reset()' => "this.where = {};this.loading=true;this.load();",
+        'reset()'  => "this.where = {};this.loading=true;this.load();",
     ];
     public $add_method = ''; 
     public $edit_method = '';
