@@ -31,23 +31,20 @@ class Vue
         'is_add'   => false,
         'is_edit'  => false,
         'is_tree'  => false,
-
     ];
     public $after_save = [];
     public $editor_timeout = 600;
     public $opt_method = [
-        'is_page' => 'page_method',
-        'is_reset' => 'reset_method',
-        'is_add'  => 'add_method',
-        'is_edit' => 'edit_method',
-        'is_tree' => 'tree_method',
+        'is_page'   => 'page_method',
+        'is_reset'  => 'reset_method',
+        'is_add'    => 'add_method',
+        'is_edit'   => 'edit_method',
+        'is_tree'   => 'tree_method',
         'is_editor' => 'editor_method',
     ];
-
     public $opt_data = [
         'is_page' => 'page_data',
     ];
-
     public $page_url;
     public $add_url;
     public $edit_url;
@@ -58,41 +55,37 @@ class Vue
         "is_show" => false,
         'where' => "{per_page:20}",
         'lists' => "[]",
-        'page' => "1",
+        'page'  => "1",
         'total' => 0,
-        'form' => "{}",
-        'node' => "{}",
-        'row' => "{}",
+        'form'  => "{}",
+        'node'  => "{}",
+        'row'   => "{}",
         'loading'=>true,
     ];
     public $page_data = [
         "is_show" => false,
-        'where' => "{per_page:20}",
-        'lists' => "[]",
-        'page' => "1",
-        'total' => 0,
-        'form' => "js:{}",
-        'node' => "js:{}",
-        'res' => "js:{}",
-        'loading'=>true,
+        'where'   => "{per_page:20}",
+        'lists'   => "[]",
+        'page'    => "1",
+        'total'   => 0,
+        'form'    => "js:{}",
+        'node'    => "js:{}",
+        'res'     => "js:{}",
+        'loading' => true,
     ];
     public $watch = [];
     public $mounted = [];
     public $created_js = [];
     public $methods    = [];
-
     public $create_update_load = [];
-
     public $page_method = [
         'page_size_change(val)' => "this.where.page= 1;this.where.per_page = val;this.load();",
         'page_change(val)' => "this.where.page = val;this.load();",
     ];
-
     public $reset_method = [
         'reload()' => "this.where.page = 1;this.loading=true;this.load();",
         'reset()' => "this.where = {};this.loading=true;this.load();",
     ];
-
     public $add_method = ''; 
     public $edit_method = '';
     public $tree_field = 'pid';
@@ -106,7 +99,7 @@ class Vue
     ];
     public $data_form;
     /**
-    * init
+    * construct
     */
     public function __construct(){
         global $config;
@@ -195,8 +188,7 @@ class Vue
     public function afterSave($val)
     {
         $this->after_save[] = $val;
-    }
-    
+    }    
     /**
      $vue->mounted('',"js:
          const that = this

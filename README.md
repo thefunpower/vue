@@ -79,6 +79,20 @@ if($vue){
 <?php }?> 
 ~~~
 
+# 压缩JS
+安装 
+
+~~~
+yarn add --dev javascript-obfuscator
+~~~
+
+配置
+~~~
+$config['vue_encodejs'] = true;
+$config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
+~~~
+
+
 ### 开源协议 
 
 The [MIT](LICENSE) License (MIT)
