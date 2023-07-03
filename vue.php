@@ -112,6 +112,13 @@ class Vue
                 $this->version = $v;
             }
         }
+        if(function_exists("do_action")){
+            $version = $this->version;
+            do_action("vue_version",$version);
+            if($version && in_array($version,[2,3])){
+                $this->version = $version;
+            }
+        }
     }
     /**
     * form字段 
