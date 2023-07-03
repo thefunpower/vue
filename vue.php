@@ -105,12 +105,24 @@ class Vue
        "
     ];
     public $data_form;
+    /**
+    * init
+    */
     public function __construct(){
         global $config;
         if(isset($config['vue_encodejs'])){
             $this->encodejs = $config['vue_encodejs'];    
-        }        
+        }      
+        if(isset($config['vue_version'])){
+            $v = $config['vue_version'];
+            if(in_array($v,[2,3])){
+                $this->version = $v;
+            }
+        }
     }
+    /**
+    * form字段 
+    */
     public function data_form($key,$val){ 
         $this->data_form[$key] = $val;
     }
@@ -134,8 +146,10 @@ class Vue
     {   
         $this->data[$key] = $val;
     }
-
-    public function parse_data($val){  
+    /**
+    * 解析data
+    */
+    protected function parse_data($val){  
         if($val == '{}' || $val == '[]'){
             return "js:".$val;
         }
@@ -157,7 +171,9 @@ class Vue
         }        
         return $val;
     }
-
+    /**
+    * 支持method
+    */
     public  function method($name, $val)
     {
         if(strpos($name,'(') === false){
@@ -165,7 +181,9 @@ class Vue
         }
         $this->methods[$name] = $val;
     }
-
+    /**
+    * 支持watch
+    */
     public  function watch($name, $val)
     {
         if(strpos($name,'.') !== false){
@@ -194,14 +212,18 @@ class Vue
         $this->mounted[$name] = $val;
     }
 
-
+    /**
+    * 支持created(['load()'])
+    */
     public  function created($load_metheds = [])
     {
         foreach ($load_metheds as $v) {
             $this->created_js[] = $v;
         }
     }
-
+    /**
+    * 生成vue js代码
+    */
     public  function run()
     {
         global $config;
@@ -322,8 +344,10 @@ class Vue
         }
         return $code;
     }
-
-    public function parse_v(&$k,&$v){ 
+    /**
+    * 解析value
+    */
+    protected function parse_v(&$k,&$v){ 
         $t_v = trim($v);
         if(strpos($k,'(') === false && substr($k,-1) != ':'){
             $k = $k.':';
@@ -338,7 +362,9 @@ class Vue
             $v = "js:".$v; 
         }
     }
-
+    /**
+    * init
+    */
     public function init()
     {
         $opt = $this->opt;
@@ -368,7 +394,7 @@ class Vue
             "show()" => " 
                  this.is_show = true;
                  this.form = {};".$data_form_add."
-                 ".$this->loadEditorAdd()."
+                 ".$this->load_editor_add()."
             ",
         ];
 
@@ -376,7 +402,7 @@ class Vue
             "update(row)" => " 
                 this.is_show = true;
                 this.form = row;  ".$data_form_update."
-                ".$this->loadEditorUpdate()."
+                ".$this->load_editor_edit()."
             "
         ];
 
@@ -405,7 +431,9 @@ class Vue
     }
 
 
-
+    /**
+    * 支持crud 
+    */
     public function crud()
     {
         if($this->page_url){
@@ -454,13 +482,15 @@ class Vue
         }
         
     }
-
+    /**
+    * 编辑器
+    */
     public function editor_method()
     { 
         $this->data("editor", "js:{}");
         
         $this->method("weditor()", "js:   
-              ".$this->loadEditor()."  
+              ".$this->load_editor()."  
         ");
     }
     /**
@@ -477,7 +507,7 @@ class Vue
     /**
     * 添加
     */
-    public function loadEditorAdd(){
+    public function load_editor_add(){
         $e = self::$_editor; 
         if(!$e){
             return;
@@ -495,7 +525,7 @@ class Vue
     /**
     * 更新
     */
-    public function loadEditorUpdate(){
+    public function load_editor_edit(){
         $e = self::$_editor; 
         if(!$e){
             return;
@@ -515,7 +545,7 @@ class Vue
     /**
     * 加载wangeditor
     */
-    public function loadEditor(){
+    public function load_editor(){
             $e = self::$_editor; 
             if(!$e){
                 return;
@@ -571,6 +601,9 @@ class Vue
     }  
 
      */
+    public function add_date(){
+        $this->addDateTimeSelect();
+    }
     public  function addDateTimeSelect()
     {
         $this->data['pickerOptions'] = "js: {
