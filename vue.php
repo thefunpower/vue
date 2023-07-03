@@ -168,6 +168,9 @@ class Vue
 
     public  function watch($name, $val)
     {
+        if(strpos($name,'.') !== false){
+            $name = "'".$name."'";
+        }
         $this->watch[$name] = $val;
     }
 

@@ -28,6 +28,46 @@ $vue->method('load()',"
 
 ~~~
 
+### mounted 
+~~~
+$vue->mounted("a","
+  alert(2);
+")
+~~~
+其中`a`是`key`
+
+### watch
+
+~~~
+$vue->watch("page(new_val,old_val)","
+  console.log('watch');
+  console.log(old_val);
+  console.log(new_val);
+")
+~~~
+
+~~~ 
+$vue->watch("where.per_page","
+  handler(new_val,old_val){
+    console.log('watch');
+    console.log(old_val);
+    console.log(new_val);
+  },  
+"); 
+~~~
+
+~~~
+$vue->watch("where","
+  handler(new_val,old_val){
+    console.log('watch');
+    console.log(old_val.per_page);
+    console.log(new_val.per_page);
+  }, 
+  deep: true
+");
+~~~
+
+
 底部加入
 ~~~
 <?php  
