@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright (c) 2021-2031, All rights reserved.
-    This is MIT LICENSE 
+    It is under MIT LICENSE 
 */
 
 /**
