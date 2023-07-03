@@ -1,8 +1,26 @@
-# vue
+# vue 
 
+## 初始化
+
+vue 3
 ~~~
 $vue =  new Vue;
+$vue->version = 3;
+~~~
+
+vue 2
+~~~
+$vue =  new Vue; 
+~~~
+
+### data 
+~~~
 $vue->data('text','welcome');
+~~~
+
+### created
+
+~~~ 
 $vue->created(['load()']);
 $vue->method('load()',"
 
