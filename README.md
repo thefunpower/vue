@@ -13,6 +13,31 @@ vue 2
 $vue =  new Vue; 
 ~~~
 
+### 时间区间
+
+~~~
+$vue->search_date = [
+  '今天',
+  '昨天',
+  '本周',
+  '本月',
+  '最近三个月',
+  '第一季度', 
+  '第二季度', 
+  '第三季度', 
+  '第四季度', 
+  '本年',
+  '全部',
+];
+$vue->add_date();
+
+~~~
+
+~~~
+<el-date-picker   v-model="where.date" value-format="yyyy-MM-dd" :picker-options="pickerOptions" size="medium" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+</el-date-picker>
+~~~
+
 ### data 
 ~~~
 $vue->data('text','welcome');

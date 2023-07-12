@@ -747,7 +747,15 @@ class Vue
             const start = new Date();
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
             picker.\$emit('pick', [start, end]);
-        ";
+        "; 
+        $jidu = vue_get_jidu();  
+        foreach($jidu as $k=>$v){
+            if($v['flag']){
+                $arr[$k] = " 
+                    picker.\$emit('pick', ['".$v[0]."', '".$v[1]."']);
+                ";
+            } 
+        }
         $arr['本年'] = "
             const end = new Date();
             const start = new Date();
@@ -765,9 +773,9 @@ class Vue
         ";
         if($search_date){
             $new_arr = [];
-            foreach($arr as $k=>$v){
-                if(in_array($k,$search_date)){
-                    $new_arr[$k] = $v;
+            foreach($search_date as $k){
+                if($arr[$k]){
+                    $new_arr[$k] = $arr[$k];
                 }
             }
             $arr = $new_arr;
@@ -776,14 +784,61 @@ class Vue
         foreach($arr as $k=>$v){
             $js[] = [
                 'text'=>$k,
-                'onClick(picker)'=>$v,
+                "js:onClick(picker){
+                    ".$v."
+                }",
             ];
         }
-        return  php_to_js(['shortcuts'=>$js]); 
+        $str = ['shortcuts'=>$js];  
+        return $str;
     }
 
 }
-
+/**
+* 季度
+* 返回 k=>{0:开始 1:结束 flag:}
+*/
+function vue_get_jidu($time = ''){
+    $time = $time?:now();  
+    if(strpos($time,':')!==false){ 
+        $time = strtotime($time);
+    }        
+    $i    = ceil(date("n",$time)/3);
+    $arr  = [1=>'一',2=>'二',3=>'三',4=>'四'];
+    $year = date("Y",$time); 
+    $arr_1 = vue_get_jidu_array($year);
+    $new_arr = [];
+    $flag = true;
+    $ex = true;
+    $j = 1;
+    foreach($arr as $k=>$v){
+        $vv = $arr_1[$k];  
+        $vv['flag'] = false;
+        if($j <= $i){
+            $vv['flag'] = true;
+        }
+        $new_arr["第".$v."季度"] = $vv;
+        $j++;
+    }
+    return $new_arr;
+}
+/**
+* 每个季度开始、结束时间
+*/
+function vue_get_jidu_array($year){
+    return [
+        1=>[$year."-01-01",$year."-03-".vue_get_last_day($year."-03")],
+        2=>[$year."-04-01",$year."-06-".vue_get_last_day($year."-06")],
+        3=>[$year."-07-01",$year."-09-".vue_get_last_day($year."-09")],
+        4=>[$year."-10-01",$year."-12-".vue_get_last_day($year."-12")],
+    ];
+}
+/**
+* 某月的最后一天
+*/
+function vue_get_last_day($month = '2023-07'){
+    return date("t", strtotime($month));
+}
 
 /**
 * vue message

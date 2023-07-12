@@ -50,8 +50,13 @@ function php_to_js($value, $safe = false)
     elseif (is_array($value)) {
         $es = array();
         if (($n = count($value)) > 0 && array_keys($value) !== range(0, $n - 1)) {
-            foreach ($value as $k => $v)
-                $es[] = "'" . yii_quote($k) . "':" . php_to_js($v, $safe);
+            foreach ($value as $k => $v){
+                if($k && is_string($k)){
+                    $es[] = "'" . yii_quote($k) . "':" . php_to_js($v, $safe);    
+                }else{
+                    $es[] = php_to_js($v, $safe);
+                } 
+            }
             return '{' . implode(',', $es) . '}';
         } else {
             foreach ($value as $v)
