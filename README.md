@@ -39,6 +39,8 @@ $vue->add_date();
 </el-date-picker>
 ~~~
 
+![演示时间效果](/tests/date.png "演示时间效果") 
+
 ### data 
 ~~~
 $vue->data('text','welcome');
