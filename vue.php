@@ -583,9 +583,7 @@ class Vue
             } 
 
             return $js;
-    }
-
-
+    } 
     /**
     日期区间：
     <el-date-picker @change="reload" v-model="where.date" value-format="yyyy-MM-dd" :picker-options="pickerOptions" size="medium" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
@@ -599,79 +597,15 @@ class Vue
         $where['created_at[<=]'] =  date("Y-m-d 23:59:59", strtotime($date[1]));
     }  
 
-     */
+   */
     public function add_date(){
         $this->addDateTimeSelect();
-    }
-    public  function addDateTimeSelect()
-    {
-        $this->data['pickerOptions'] = "js: {
-                shortcuts: [{
-                    text: '今天',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-                        picker.\$emit('pick', [end, end]);
-                    }
-                },{
-                    text: '昨天',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-                        end.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-                        picker.\$emit('pick', [start, start]);
-                    }
-                },{
-                    text: '本周',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                }, {
-                    text: '本月',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                }, {
-                    text: '本季度',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                }, {
-                    text: '本年',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setMonth(0);
-                        start.setDate(1);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                },
-                {
-                    text: '全部',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setYear(2000);
-                        start.setMonth(0);
-                        start.setDate(1);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                }
-            ]
-            }";
-    }
-
+    } 
+    public function reset_date(){
+        $vue->method("reset_date()","
+            this.pickerOptions = ".php_to_js($this->get_date_area()).";
+        ");
+    } 
     /**
     * 排序
     * misc('sortable'); 
@@ -770,6 +704,81 @@ class Vue
             $attr .= "\n";           
         }  
         return '<el-pagination '.$attr.'></el-pagination>'."\n" ;
+    }
+
+    public  function addDateTimeSelect()
+    {
+        $this->data['pickerOptions'] = $this->get_date_area();
+    }
+    /**
+    * 设置时间选择区间
+    */
+    protected function get_date_area(){
+        return "js: {
+                shortcuts: [{
+                    text: '今天',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                        picker.\$emit('pick', [end, end]);
+                    }
+                },{
+                    text: '昨天',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                        end.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                        picker.\$emit('pick', [start, start]);
+                    }
+                },{
+                    text: '本周',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.\$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '本月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                        picker.\$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '本季度',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                        picker.\$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '本年',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setMonth(0);
+                        start.setDate(1);
+                        picker.\$emit('pick', [start, end]);
+                    }
+                },
+                {
+                    text: '全部',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setYear(2000);
+                        start.setMonth(0);
+                        start.setDate(1);
+                        picker.\$emit('pick', [start, end]);
+                    }
+                }
+            ]
+            }";
     }
 
 }
