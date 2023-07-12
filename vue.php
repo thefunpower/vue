@@ -624,7 +624,7 @@ class Vue
                         picker.\$emit('pick', [start, start]);
                     }
                 },{
-                    text: '最近一周',
+                    text: '本周',
                     onClick(picker) {
                         const end = new Date();
                         const start = new Date();
@@ -632,7 +632,7 @@ class Vue
                         picker.\$emit('pick', [start, end]);
                     }
                 }, {
-                    text: '最近一个月',
+                    text: '本月',
                     onClick(picker) {
                         const end = new Date();
                         const start = new Date();
@@ -640,7 +640,7 @@ class Vue
                         picker.\$emit('pick', [start, end]);
                     }
                 }, {
-                    text: '最近三个月',
+                    text: '本季度',
                     onClick(picker) {
                         const end = new Date();
                         const start = new Date();
