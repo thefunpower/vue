@@ -5,10 +5,7 @@
 */
 
 /**
- * 该功能有点复杂，配置table插件将可实现少量PHP代码生成table带搜索、添加、编辑、删除等操作
- * 新增方法202211
- * $vue->afterSave("_this.main_sql_1 = false;");  
- *  
+ * 用于生成vue2或vue3的JS代码
  */
 class Vue
 {
