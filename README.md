@@ -13,6 +13,7 @@ vue 2
 $vue =  new Vue; 
 ~~~
 
+
 ### 时间区间
 
 ~~~
@@ -115,6 +116,19 @@ yarn add --dev javascript-obfuscator
 ~~~
 $config['vue_encodejs'] = true;
 $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
+~~~
+
+
+### 一般函数
+
+每个季度开始、结束时间
+~~~
+vue_get_jidu_array($year)
+~~~
+
+某月的最后一天
+~~~
+vue_get_last_day($month = '2023-07')
 ~~~
 
 
