@@ -98,6 +98,8 @@ class Vue
        "
     ];
     public $data_form;
+    //搜索的时间
+    public $search_date = [];
     /**
     * construct
     */
@@ -713,72 +715,71 @@ class Vue
     /**
     * 设置时间选择区间
     */
-    protected function get_date_area(){
-        return "js: {
-                shortcuts: [{
-                    text: '今天',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-                        picker.\$emit('pick', [end, end]);
-                    }
-                },{
-                    text: '昨天',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-                        end.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-                        picker.\$emit('pick', [start, start]);
-                    }
-                },{
-                    text: '本周',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                }, {
-                    text: '本月',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                }, {
-                    text: '本季度',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                }, {
-                    text: '本年',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setMonth(0);
-                        start.setDate(1);
-                        picker.\$emit('pick', [start, end]);
-                    }
-                },
-                {
-                    text: '全部',
-                    onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
-                        start.setYear(2000);
-                        start.setMonth(0);
-                        start.setDate(1);
-                        picker.\$emit('pick', [start, end]);
-                    }
+    protected function get_date_area(){ 
+        $search_date = $this->search_date;
+        $arr['今天'] = "
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+            picker.\$emit('pick', [end, end]);
+        ";
+        $arr['昨天'] = "
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+            end.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+            picker.\$emit('pick', [start, start]);
+        ";
+        $arr['本周'] = "
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.\$emit('pick', [start, end]);
+        ";
+        $arr['本月'] = "
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.\$emit('pick', [start, end]);
+        ";
+        $arr['最近三个月'] = "
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.\$emit('pick', [start, end]);
+        ";
+        $arr['本年'] = "
+            const end = new Date();
+            const start = new Date();
+            start.setMonth(0);
+            start.setDate(1);
+            picker.\$emit('pick', [start, end]);
+        ";
+        $arr['全部'] = "
+            const end = new Date();
+            const start = new Date();
+            start.setYear(2000);
+            start.setMonth(0);
+            start.setDate(1);
+            picker.\$emit('pick', [start, end]);
+        ";
+        if($search_date){
+            $new_arr = [];
+            foreach($arr as $k=>$v){
+                if(in_array($k,$search_date)){
+                    $new_arr[$k] = $v;
                 }
-            ]
-            }";
+            }
+            $arr = $new_arr;
+        }
+        $js = [];
+        foreach($arr as $k=>$v){
+            $js[] = [
+                'text'=>$k,
+                'onClick(picker)'=>$v,
+            ];
+        }
+        return  php_to_js(['shortcuts'=>$js]); 
     }
 
 }
