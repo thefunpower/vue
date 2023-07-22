@@ -107,6 +107,29 @@ if($vue){
 <?php }?> 
 ~~~
 
+# wangeditor 富文本
+
+如`body`字段
+
+在html中
+~~~
+<?=$vue->editor()?>
+~~~
+
+vue代码
+
+~~~
+$vue->editor_method();
+$vue->method("edit_form(row)","
+    let f = this.field;
+    this.form = {};
+    for(let r of this.field){
+        this.\$set(this.form,r,row[r]);
+    } 
+    this.is_open = true; 
+".$vue->load_editor_edit());
+~~~
+
 # 压缩JS
 安装 
 
