@@ -21,18 +21,29 @@ $vue->search_date = [
   '今天',
   '昨天',
   '本周',
+  '上周',
+  '上上周',
   '本月',
+  '上月',
+  '上上月',
+  '本年'=>'今年', 
+  '上年'=>'去年',
+  '上上年',
+  '最近一个月',
+  '最近两个月',
+  
   '最近三个月',
   '第一季度', 
   '第二季度', 
   '第三季度', 
   '第四季度', 
-  '本年',
-  '全部',
 ];
 $vue->add_date();
 
 ~~~
+
+`search_date` 以 `key`=>`value`形式存在，`key`是显示的时间，`value`是显示的标题
+
 
 ~~~
 <el-date-picker   v-model="where.date" value-format="yyyy-MM-dd" :picker-options="pickerOptions" size="medium" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">

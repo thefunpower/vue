@@ -715,34 +715,60 @@ class Vue
     protected function get_date_area(){ 
         $search_date = $this->search_date;
         $arr['今天'] = "
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+            let start = new Date('".date('Y-m-d',time())."'); 
+            let end  = new Date('".date('Y-m-d',time())."'); 
             picker.\$emit('pick', [end, end]);
         ";
         $arr['昨天'] = "
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-            end.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+            let start = new Date('".date('Y-m-d',time()-86400)."'); 
+            let end  = new Date('".date('Y-m-d',time()-86400)."'); 
             picker.\$emit('pick', [start, start]);
         ";
         $arr['本周'] = "
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            let start = new Date('".date("Y-m-d",strtotime('this week'))."'); 
+            let end   = new Date('".date('Y-m-d',time())."'); 
+            picker.\$emit('pick', [start, end]);
+        ";
+        $arr['上周'] = "
+            let start = new Date('".date("Y-m-d",strtotime('last week monday'))."'); 
+            let end   = new Date('".date('Y-m-d',strtotime('-10 second',strtotime('last week sunday +1 day')))."'); 
+            picker.\$emit('pick', [start, end]);
+        ";
+        $arr['上上周'] = "
+            let start = new Date('".date("Y-m-d",strtotime('-2 weeks',strtotime('monday this week')))."'); 
+            let end   = new Date('".date('Y-m-d',strtotime('-1 week -1 second',strtotime('monday this week')))."'); 
             picker.\$emit('pick', [start, end]);
         ";
         $arr['本月'] = "
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            let start = new Date('".date("Y-m-01")."');
+            let end = new Date('".date("Y-m-d")."'); 
             picker.\$emit('pick', [start, end]);
         ";
+        $arr['上月'] = "
+            let start = new Date('".date("Y-m-d",strtotime('first day of last month'))."'); 
+            let end = new Date('".date("Y-m-d",strtotime('last day of last month'))."'); 
+            picker.\$emit('pick', [start, end]);
+        ";
+        $arr['上上月'] = "
+            let start = new Date('".date("Y-m-d",strtotime('-2 months', strtotime('first day of this month')))."'); 
+            let end = new Date('".date("Y-m-d",strtotime('-1 day', strtotime('first day of last month')))."'); 
+            picker.\$emit('pick', [start, end]);
+        ";
+        
+
+        $arr['最近一个月'] = "
+            let start = new Date('".date("Y-m-d",strtotime('-1 month')+86400)."'); 
+            let end = new Date('".date('Y-m-d')."'); 
+            picker.\$emit('pick', [start, end]);
+        "; 
+        $arr['最近两个月'] = "
+            let start = new Date('".date("Y-m-d",strtotime('-2 month')+86400)."'); 
+            let end = new Date('".date('Y-m-d')."'); 
+            picker.\$emit('pick', [start, end]);
+        "; 
         $arr['最近三个月'] = "
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            let start = new Date('".date("Y-m-d",strtotime('-3 month')+86400)."'); 
+            let end = new Date('".date('Y-m-d')."'); 
             picker.\$emit('pick', [start, end]);
         "; 
         $jidu = vue_get_jidu();  
@@ -754,25 +780,27 @@ class Vue
             } 
         }
         $arr['本年'] = "
-            const end = new Date();
-            const start = new Date();
-            start.setMonth(0);
-            start.setDate(1);
+            const start = new Date('".date("Y-m-d",strtotime('first day of January'))."');
+            const end = new Date('".date("Y-m-d",strtotime('last day of December'))."'); 
             picker.\$emit('pick', [start, end]);
-        ";
-        $arr['全部'] = "
-            const end = new Date();
-            const start = new Date();
-            start.setYear(2000);
-            start.setMonth(0);
-            start.setDate(1);
+        "; 
+        $arr['上年'] = "
+            const start = new Date('".date("Y-m-d",strtotime('first day of January last year'))."');
+            const end = new Date('".date("Y-m-d",strtotime('last day of December  last year'))."'); 
             picker.\$emit('pick', [start, end]);
-        ";
+        "; 
+        $arr['上上年'] = "
+            const start = new Date('".date("Y-m-d",mktime(0, 0, 0, 1, 1, date('Y') - 2))."');
+            const end = new Date('".date("Y-m-d",mktime(23, 59, 59, 12, 31, date('Y') - 2))."'); 
+            picker.\$emit('pick', [start, end]);
+        "; 
         if($search_date){
             $new_arr = [];
-            foreach($search_date as $k){
+            foreach($search_date as $title=>$k){
                 if($arr[$k]){
                     $new_arr[$k] = $arr[$k];
+                }else if($arr[$title]){
+                    $new_arr[$k] = $arr[$title];
                 }
             }
             $arr = $new_arr;
