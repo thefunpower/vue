@@ -9,6 +9,8 @@
  */
 class Vue
 {
+    // 2023-11-01 之前的时间将无法在日期字段中选择
+    public $start_date = '';
     /**
     * vue版本，默认为2
     * 当为3时，请加载vue3的JS，如 https://unpkg.com/vue@3/dist/vue.global.js
@@ -709,11 +711,17 @@ class Vue
     {
         $this->data['pickerOptions'] = $this->get_date_area();
     }
+    protected function get_date_range_flag($a,$b,$allow_1){
+        if (!$allow_1 ||  ($allow_1 && $a>=$allow_1 && $b >= $allow_1)){
+            return true;
+        }
+    }
     /**
     * 设置时间选择区间
-    */
+    */ 
     protected function get_date_area(){ 
         $search_date = $this->search_date;
+        $allow_1 = $this->start_date; 
         $arr['今天'] = "
             let start = new Date('".date('Y-m-d',time())."'); 
             let end  = new Date('".date('Y-m-d',time())."'); 
@@ -724,53 +732,87 @@ class Vue
             let end  = new Date('".date('Y-m-d',time()-86400)."'); 
             picker.\$emit('pick', [start, start]);
         ";
-        $arr['本周'] = "
-            let start = new Date('".date("Y-m-d",strtotime('this week'))."'); 
-            let end   = new Date('".date('Y-m-d',time())."'); 
-            picker.\$emit('pick', [start, end]);
-        ";
-        $arr['上周'] = "
-            let start = new Date('".date("Y-m-d",strtotime('last week monday'))."'); 
-            let end   = new Date('".date('Y-m-d',strtotime('-10 second',strtotime('last week sunday +1 day')))."'); 
-            picker.\$emit('pick', [start, end]);
-        ";
-        $arr['上上周'] = "
-            let start = new Date('".date("Y-m-d",strtotime('-2 weeks',strtotime('monday this week')))."'); 
-            let end   = new Date('".date('Y-m-d',strtotime('-1 week -1 second',strtotime('monday this week')))."'); 
-            picker.\$emit('pick', [start, end]);
-        ";
-        $arr['本月'] = "
-            let start = new Date('".date("Y-m-01")."');
-            let end = new Date('".date("Y-m-d")."'); 
-            picker.\$emit('pick', [start, end]);
-        ";
-        $arr['上月'] = "
-            let start = new Date('".date("Y-m-d",strtotime('first day of last month'))."'); 
-            let end = new Date('".date("Y-m-d",strtotime('last day of last month'))."'); 
-            picker.\$emit('pick', [start, end]);
-        ";
-        $arr['上上月'] = "
-            let start = new Date('".date("Y-m-d",strtotime('-2 months', strtotime('first day of this month')))."'); 
-            let end = new Date('".date("Y-m-d",strtotime('-1 day', strtotime('first day of last month')))."'); 
-            picker.\$emit('pick', [start, end]);
-        ";
-        
-
-        $arr['最近一个月'] = "
-            let start = new Date('".date("Y-m-d",strtotime('-1 month')+86400)."'); 
-            let end = new Date('".date('Y-m-d')."'); 
-            picker.\$emit('pick', [start, end]);
-        "; 
-        $arr['最近两个月'] = "
-            let start = new Date('".date("Y-m-d",strtotime('-2 month')+86400)."'); 
-            let end = new Date('".date('Y-m-d')."'); 
-            picker.\$emit('pick', [start, end]);
-        "; 
-        $arr['最近三个月'] = "
-            let start = new Date('".date("Y-m-d",strtotime('-3 month')+86400)."'); 
-            let end = new Date('".date('Y-m-d')."'); 
-            picker.\$emit('pick', [start, end]);
-        "; 
+        $a = date("Y-m-d",strtotime('this week'));
+        $b = date('Y-m-d',time());
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['本周'] = "
+                let start = new Date('".$a."'); 
+                let end   = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            ";      
+        } 
+        $a = date("Y-m-d",strtotime('last week monday'));
+        $b = date('Y-m-d',strtotime('-10 second',strtotime('last week sunday +1 day')));
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['上周'] = "
+                let start = new Date('".$a."'); 
+                let end   = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            ";
+        }
+        $a = date("Y-m-d",strtotime('-2 weeks',strtotime('monday this week')));
+        $b = date('Y-m-d',strtotime('-1 week -1 second',strtotime('monday this week')));
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['上上周'] = "
+                let start = new Date('".$a."'); 
+                let end   = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            ";
+        }
+        $a = date("Y-m-01");
+        $b = date("Y-m-d");
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['本月'] = "
+                let start = new Date('".$a."');
+                let end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            ";
+        }
+        $a = date("Y-m-d",strtotime('first day of last month'));
+        $b = date("Y-m-d",strtotime('last day of last month'));
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['上月'] = "
+                let start = new Date('".$a."'); 
+                let end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            ";
+        }
+        $a = date("Y-m-d",strtotime('-2 months', strtotime('first day of this month')));
+        $b = date("Y-m-d",strtotime('-1 day', strtotime('first day of last month')));
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['上上月'] = "
+                let start = new Date('".$a."'); 
+                let end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            ";
+        }
+        $a = date("Y-m-d",strtotime('-1 month')+86400);
+        $b = date('Y-m-d');
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['最近一个月'] = "
+                let start = new Date('".$a."'); 
+                let end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            "; 
+        }
+        $a = date("Y-m-d",strtotime('-2 month')+86400);
+        $b = date('Y-m-d');
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['最近两个月'] = "
+                let start = new Date('".$a."'); 
+                let end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            "; 
+        }
+        $a = date("Y-m-d",strtotime('-3 month')+86400);
+        $b = date('Y-m-d');
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['最近三个月'] = "
+                let start = new Date('".$a."'); 
+                let end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            "; 
+        }
         $jidu = vue_get_jidu();  
         foreach($jidu as $k=>$v){
             if($v['flag']){
@@ -779,21 +821,33 @@ class Vue
                 ";
             } 
         }
-        $arr['本年'] = "
-            const start = new Date('".date("Y-m-d",strtotime('first day of January'))."');
-            const end = new Date('".date("Y-m-d",strtotime('last day of December'))."'); 
-            picker.\$emit('pick', [start, end]);
-        "; 
-        $arr['上年'] = "
-            const start = new Date('".date("Y-m-d",strtotime('first day of January last year'))."');
-            const end = new Date('".date("Y-m-d",strtotime('last day of December  last year'))."'); 
-            picker.\$emit('pick', [start, end]);
-        "; 
-        $arr['上上年'] = "
-            const start = new Date('".date("Y-m-d",mktime(0, 0, 0, 1, 1, date('Y') - 2))."');
-            const end = new Date('".date("Y-m-d",mktime(23, 59, 59, 12, 31, date('Y') - 2))."'); 
-            picker.\$emit('pick', [start, end]);
-        "; 
+        $a = date("Y-m-d",strtotime('first day of January'));
+        $b = date("Y-m-d",strtotime('last day of December'));
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['本年'] = "
+                const start = new Date('".$a."');
+                const end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            "; 
+        }
+        $a = date("Y-m-d",strtotime('first day of January last year'));
+        $b = date("Y-m-d",strtotime('last day of December  last year'));
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['上年'] = "
+                const start = new Date('".$a."');
+                const end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            "; 
+        }
+        $a = date("Y-m-d",mktime(0, 0, 0, 1, 1, date('Y') - 2));
+        $b = date("Y-m-d",mktime(23, 59, 59, 12, 31, date('Y') - 2));
+        if($this->get_date_range_flag($a,$b,$allow_1)){
+            $arr['上上年'] = "
+                const start = new Date('".$a."');
+                const end = new Date('".$b."'); 
+                picker.\$emit('pick', [start, end]);
+            "; 
+        }
         if($search_date){
             $new_arr = [];
             foreach($search_date as $title=>$k){
@@ -814,11 +868,20 @@ class Vue
                 }",
             ];
         }
-        $str = ['shortcuts'=>$js];  
+        $str = ['shortcuts'=>$js];   
+        if($allow_1){
+            $disable_str = "
+            return ctime < ".strtotime($allow_1).";
+            ";
+            $str[] = "js:disabledDate(time){ 
+                      let ctime = time.getTime()/1000;
+                    ".$disable_str.
+                "}";    
+        } 
         return $str;
-    }
-
+    }  
 }
+
 /**
 * 季度
 * 返回 k=>{0:开始 1:结束 flag:}
