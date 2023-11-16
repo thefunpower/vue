@@ -1,9 +1,4 @@
 <?php
-/*
-    Copyright (c) 2021-2031, All rights reserved.
-    It is under MIT LICENSE 
-*/
-
 /**
  * 用于生成vue2或vue3的JS代码
  */
