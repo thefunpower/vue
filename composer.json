@@ -3,7 +3,7 @@
     "type": "library",
     "description": "封装VUE是混编PHP代码使用Element UI2.15.13的前提",
     "keywords": ["php"],
-    "license": "MIT",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "kenken"
