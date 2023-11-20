@@ -157,11 +157,7 @@ $config['vue_encodejs'] = true;
 $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
 ~~~
 
-也可使用进行简单的加密，无需yarn
-~~~
-$config['vue_sample_encode'] = true;
-~~~
-
+ 
 
 ### 一般函数
 
