@@ -306,7 +306,11 @@ class Vue
         if($this->encodejs){
             $uri = $_SERVER['REQUEST_URI'];
             $js_file = '/dist/js/vue/'.md5($uri).'.js';
-            $js_file_path = PATH.$js_file;
+            $output_path = PATH;
+            if(defined('WWW_PATH')){
+                $output_path = WWW_PATH;
+            }
+            $js_file_path = $output_path.$js_file;
             $dir = get_dir($js_file_path);
             if(!is_dir($dir)){mkdir($dir,0777,true);} 
             $is_write = true; 
