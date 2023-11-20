@@ -16,7 +16,9 @@ class Vue
     * $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
     * 依赖 yarn add --dev javascript-obfuscator
     */
-    public $encodejs = false;
+    public $encodejs = false; 
+    public $sample_encode = false;
+
     public $upload_url = '/admin/upload/index';
     public $opt = [
         'is_editor' => false,
@@ -101,6 +103,9 @@ class Vue
         global $config;
         if(isset($config['vue_encodejs'])){
             $this->encodejs = $config['vue_encodejs'];    
+        }  
+        if(isset($config['vue_sample_encode'])){
+            $this->sample_encode = $config['vue_sample_encode'];    
         }      
         if(isset($config['vue_version'])){
             $v = $config['vue_version'];
@@ -303,6 +308,7 @@ class Vue
         if($name && $name != 'load'){
             $code = str_replace("this.load()","this.".$name."()",$code);    
         } 
+         
         if($this->encodejs){
             $uri = $_SERVER['REQUEST_URI'];
             $js_file = '/dist/js/vue/'.md5($uri).'.js';
@@ -337,6 +343,14 @@ class Vue
             } else{
                 return $code;
             }
+        } else if($this->sample_encode){
+            if(function_exists('do_action')){
+                do_action("vue",$code);
+            }
+            $sample_code = base64_encode($code);
+            return "
+            eval(atob('".$sample_code."'));
+            "; 
         }
         if(function_exists('do_action')){
             do_action("vue",$code);
