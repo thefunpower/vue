@@ -16,8 +16,7 @@ class Vue
     * $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
     * 依赖 yarn add --dev javascript-obfuscator
     */
-    public $encodejs = false;  
-
+    public $encodejs = false;
     public $upload_url = '/admin/upload/index';
     public $opt = [
         'is_editor' => false,
@@ -102,7 +101,7 @@ class Vue
         global $config;
         if(isset($config['vue_encodejs'])){
             $this->encodejs = $config['vue_encodejs'];    
-        }     
+        }      
         if(isset($config['vue_version'])){
             $v = $config['vue_version'];
             if(in_array($v,[2,3])){
@@ -304,7 +303,6 @@ class Vue
         if($name && $name != 'load'){
             $code = str_replace("this.load()","this.".$name."()",$code);    
         } 
-         
         if($this->encodejs){
             $uri = $_SERVER['REQUEST_URI'];
             $js_file = '/dist/js/vue/'.md5($uri).'.js';
@@ -327,13 +325,14 @@ class Vue
                 if(!file_exists($js_file_path)){
                     file_put_contents($js_file_path,$code);    
                     $obfuscator_bin = $config['obfuscator']?:PATH.'node_modules/javascript-obfuscator/bin/javascript-obfuscator';
-                    $run_cmd = $obfuscator_bin." $js_file_path --output $js_file_path"; 
+                    $run_cmd = $obfuscator_bin." $js_file_path --output $js_file_path --self-defending true --disable-console-output true --debug-protection true --control-flow-flattening true --dead-code-injection ture --string-array true --string-array-rotate true --string-array-shuffle true --string-array-index-shift true";
                     exec($run_cmd);
                 }
+                $rand =filemtime($js_file_path); 
                 return " 
                 (function() {
                   var vue_php_auto = document.createElement('script');
-                  vue_php_auto.src = '".$js_file."';
+                  vue_php_auto.src = '".$js_file."?v=".$rand."';
                   document.body.insertBefore(vue_php_auto, document.body.lastChild);
                 })();"; 
             } else{
