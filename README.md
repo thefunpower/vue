@@ -174,4 +174,4 @@ vue_get_last_day($month = '2023-07')
 
 ### 开源协议 
 
-The [MIT](LICENSE) License (MIT)
+[Apache License 2.0](LICENSE)
