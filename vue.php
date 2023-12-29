@@ -115,6 +115,10 @@ class Vue
                 $this->version = $version;
             }
         }
+        $upload_url = get_config('upload_url');
+        if($upload_url){
+            $this->upload_url = $upload_url;
+        }
     }
     /**
     * form字段 
