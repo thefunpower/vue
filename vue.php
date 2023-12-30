@@ -66,7 +66,8 @@ class Vue
         'node'    => "js:{}",
         'res'     => "js:{}",
         'loading' => true,
-    ];
+    ]; 
+    public $editor_image_upload_click = "";
     public $watch = [];
     public $mounted = [];
     public $created_js = [];
@@ -555,6 +556,13 @@ class Vue
                 return;
             }
             $js = '';
+            $custom_upload = "";
+            if($this->editor_image_upload_click){
+                $custom_upload = "
+                 customBrowseAndUpload(insertFn) { ".$this->editor_image_upload_click." 
+                    return false;
+                 },";
+             } 
             foreach($e as $name){
                 $js .= " 
                 if(editor".$name."){ 
@@ -564,8 +572,10 @@ class Vue
                     placeholder: '',
                     MENU_CONF: {
                       uploadImage: {
-                        fieldName: 'file',server: '".$this->upload_url."?is_editor=1'
-                      }
+                        fieldName: 'file',server: '".$this->upload_url."?is_editor=1',
+                        ".$custom_upload."
+                      }, 
+
                     }, 
                     onChange(editor) {  
                       _this.form.".$name." = editor.getHtml(); 
