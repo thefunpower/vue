@@ -177,6 +177,16 @@ vue_get_jidu_array($year)
 vue_get_last_day($month = '2023-07')
 ~~~
 
+### wangeditor 5 
+
+有时需要替换原来的图片上传按钮，以下为演示，实际使用请根据情况处理。
+~~~
+$vue->data('is_open_editor',false);
+$vue->editor_image_upload_click = "
+    app.add_media('editorbody');
+    app.is_open_editor = true;
+"; 
+~~~
 
 ### 开源协议 
 
