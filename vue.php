@@ -247,7 +247,14 @@ class Vue
                 let cpage = this.where.page || 1;
                 return (cpage - 1) * per_page + index + 1;  
             ');
-        }  
+        }
+        if(!$this->methods['index_method(index)']){
+            $this->method('index_method(index)', '
+                let per_page = this.where.page_size||0;
+                let cpage = this.where.page || 1;
+                return (cpage - 1) * per_page + index + 1;  
+            ');
+        }    
         foreach ($this->methods as $k => $v) {
             $v = str_replace("js:","",$v);
             $this->parse_v($k,$v);
