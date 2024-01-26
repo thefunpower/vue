@@ -13,6 +13,12 @@ vue 2
 $vue =  new Vue; 
 ~~~
 
+### index
+
+~~~
+<el-table-column type="index" label="序号" :index="indexMethod" width="80">
+</el-table-column>
+~~~
 
 ### 时间区间
 
