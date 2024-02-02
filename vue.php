@@ -217,7 +217,11 @@ class Vue
     public  function created($load_metheds = [])
     {
         foreach ($load_metheds as $v) {
-            $this->created_js[] = $v;
+            $k = $v;
+            $k = str_replace("(","",$k);
+            $k = str_replace(")","",$k);
+            $k = trim($k);
+            $this->created_js[$k] = $v;
         }
     }
     /**
