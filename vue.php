@@ -94,6 +94,7 @@ class Vue
     public $data_form;
     //搜索的时间
     public $search_date = [];
+    public $use_config = true;
     /**
     * construct
     */
@@ -116,10 +117,12 @@ class Vue
                 $this->version = $version;
             }
         }
-        $upload_url = get_config('upload_url');
-        if($upload_url) {
-            $this->upload_url = $upload_url;
-        }
+        if($this->use_config){
+            $upload_url = get_config('upload_url');
+            if($upload_url) {
+                $this->upload_url = $upload_url;
+            }
+        } 
     }
     /**
     * form字段
