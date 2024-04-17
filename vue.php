@@ -1001,3 +1001,29 @@ function vue_loading($name = 'load', $txt = '加载中')
           background: 'rgba(0, 0, 0, 0.7)'
     }); \n";
 }
+/**
+* <el-table class="draggable_video"></el-table>
+* 
+* $str = vue_el_table_drag($ele='.draggable_video',$data='form.video_list');
+* $vue->method("video_row_drop(ele)",$str);
+* 表格拖拽
+*/
+function vue_el_table_drag($ele='.table',$data='form.video_list'){
+    return "const tbody = document.querySelector('".$ele." .el-table__body-wrapper tbody'); 
+    let list = this.".$data.";
+    Sortable.create(tbody, { 
+        draggable: '".$ele." .el-table__row',
+        onEnd(eve) {   
+            let newIndex = eve.newIndex;
+            let oldIndex = eve.oldIndex;  
+            let old = list[oldIndex];  
+            list.splice(oldIndex,1);
+            list.splice(newIndex,0,old);  
+            app.".$data." = [];   
+            app.\$nextTick(()=>{
+              app.".$data." = list; 
+            }) ;
+            app.\$forceUpdate();
+        } 
+    });";
+}
