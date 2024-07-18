@@ -10,7 +10,7 @@ class Vue
     * vue版本，默认为2
     * 当为3时，请加载vue3的JS，如 https://unpkg.com/vue@3/dist/vue.global.js
     */
-    public $version = 2;
+    public $version = 2; 
     /*
     * $config['vue_encodejs'] = true;
     * $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
@@ -288,7 +288,7 @@ class Vue
                 $v = "js:" . $v . "";
             }
             $mounted_str .= $br . php_to_js($v) . "";
-        }
+        } 
         $js = "
             var _this;
             var app = new Vue({
@@ -761,9 +761,27 @@ class Vue
         }
     }
     /**
+    * 定时加载时间选择
+    */
+    public function loop_picker_options($url,$time = 0){
+        global $vue;
+        if($time > 0){
+            $time = $time*1000;
+            $this->reset_date(); 
+            $this->created(['interval_picker_options()']); 
+            $this->method("interval_picker_options()"," 
+                setInterval(()=>{
+                    ajax('".$url."',{},function(res){
+                        app.pickerOptions = res.data;
+                    });
+                },".$time.");
+            ");
+        }
+    }
+    /**
     * 设置时间选择区间
     */
-    protected function get_date_area()
+    public function get_date_area()
     {
         $search_date = $this->search_date;
         $allow_1 = $this->start_date;

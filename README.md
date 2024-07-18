@@ -51,6 +51,21 @@ $vue->add_date();
 
 ~~~
 
+时间定时刷新
+
+~~~
+$vue->loop_picker_options('/product_quality/api_index/date',3);
+~~~
+
+接口返回
+
+~~~
+return json_success(['data'=>(new \Vue)->get_date_area()]); 
+~~~
+
+
+
+
 `search_date` 以 `key`=>`value`形式存在，`key`是显示的时间，`value`是显示的标题
 
 
