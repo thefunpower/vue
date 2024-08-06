@@ -213,12 +213,11 @@ $import = $vue->get_import([
     'label'=>'导入xls',
     'table_body'=>'
     <el-table-column   prop="desc"  label="产品名称" width=""></el-table-column>
-    <el-table-column   prop="spec"  label="规格型号" width=""></el-table-column>
-    <el-table-column   prop="product_ph"  label="批号" width=""></el-table-column>
-    <el-table-column   prop="produce_date"  label="生产日期" width=""></el-table-column>
-    <el-table-column   prop="invalid_date"  label="失效日期" width=""></el-table-column>
-    <el-table-column   prop="uuid"  label="唯一码" width=""></el-table-column>
-    <el-table-column   prop="reg_num"  label="注册证号" width=""></el-table-column>
+    <el-table-column   prop="reg_num"  label="状态" width="">
+         <template slot-scope="scope">
+            
+         </template>
+    </el-table-column>
     '
 ]); 
 ~~~
