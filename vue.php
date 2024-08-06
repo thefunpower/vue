@@ -10,7 +10,7 @@ class Vue
     * vue版本，默认为2
     * 当为3时，请加载vue3的JS，如 https://unpkg.com/vue@3/dist/vue.global.js
     */
-    public $version = 2; 
+    public $version = 2;
     /*
     * $config['vue_encodejs'] = true;
     * $config['vue_encodejs_ignore'] = ['/plugins/config/config.php'];
@@ -117,12 +117,12 @@ class Vue
                 $this->version = $version;
             }
         }
-        if($this->use_config){
+        if($this->use_config) {
             $upload_url = get_config('upload_url');
             if($upload_url) {
                 $this->upload_url = $upload_url;
             }
-        } 
+        }
     }
     /**
     * form字段
@@ -288,7 +288,7 @@ class Vue
                 $v = "js:" . $v . "";
             }
             $mounted_str .= $br . php_to_js($v) . "";
-        } 
+        }
         $js = "
             var _this;
             var app = new Vue({
@@ -763,13 +763,14 @@ class Vue
     /**
     * 定时加载时间选择
     */
-    public function loop_picker_options($url,$time = 0){
+    public function loop_picker_options($url, $time = 0)
+    {
         global $vue;
-        if($time > 0){
-            $time = $time*1000;
-            $this->reset_date(); 
-            $this->created(['interval_picker_options()']); 
-            $this->method("interval_picker_options()"," 
+        if($time > 0) {
+            $time = $time * 1000;
+            $this->reset_date();
+            $this->created(['interval_picker_options()']);
+            $this->method("interval_picker_options()", " 
                 setInterval(()=>{
                     ajax('".$url."',{},function(res){
                         app.pickerOptions = res.data;
@@ -1021,12 +1022,13 @@ function vue_loading($name = 'load', $txt = '加载中')
 }
 /**
 * <el-table class="draggable_video"></el-table>
-* 
+*
 * $str = vue_el_table_drag($ele='.draggable_video',$data='form.video_list');
 * $vue->method("video_row_drop(ele)",$str);
 * 表格拖拽
 */
-function vue_el_table_drag($ele='.table',$data='form.video_list'){
+function vue_el_table_drag($ele = '.table', $data = 'form.video_list')
+{
     return "const tbody = document.querySelector('".$ele." .el-table__body-wrapper tbody'); 
     let list = this.".$data.";
     Sortable.create(tbody, { 
