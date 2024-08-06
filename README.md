@@ -203,6 +203,104 @@ $vue->editor_image_upload_click = "
 "; 
 ~~~
 
+### 导入文件
+
+~~~
+$import = $vue->get_import([
+    'upload_url'=>'/sys/upload/one',
+    'parse_url'=>'/product_quality/goods/import_parse',
+    'save_url'=>'/product_quality/goods/import_parse_save',
+    'label'=>'导入xls',
+    'table_body'=>'
+    <el-table-column   prop="desc"  label="产品名称" width=""></el-table-column>
+    <el-table-column   prop="spec"  label="规格型号" width=""></el-table-column>
+    <el-table-column   prop="product_ph"  label="批号" width=""></el-table-column>
+    <el-table-column   prop="produce_date"  label="生产日期" width=""></el-table-column>
+    <el-table-column   prop="invalid_date"  label="失效日期" width=""></el-table-column>
+    <el-table-column   prop="uuid"  label="唯一码" width=""></el-table-column>
+    <el-table-column   prop="reg_num"  label="注册证号" width=""></el-table-column>
+    '
+]); 
+~~~
+
+返回 `html` `pop_html`
+
+~~~
+<?php 
+$html = $import['html'];
+?>
+<?=$import['pop_html']?>
+~~~
+
+
+接口处理
+import_parse
+~~~
+$url = $this->input['url'];
+$file = PATH.$url;
+if(!file_exists($file)){
+  return json_error(['msg'=>'操作异常']);
+}
+$all = \helper_v3\Xls::load($file,[ 
+      '产品名称'   => 'desc',
+      '规格型号'   => 'spec',
+      '批号'       => 'product_ph',
+      '生产日期'   => 'produce_date',
+      '失效日期'   => 'invalid_date',
+      '唯一码'     => 'uuid',
+      '注册证号'     => 'reg_num',
+]);
+foreach($all as $k=>$v){
+  $desc = $v['desc'];
+  $spec = $v['spec'];
+  $product_ph = $v['product_ph'];
+  $produce_date = $v['produce_date'];
+  $invalid_date = $v['invalid_date'];
+  $uuid = $v['uuid'];
+  $reg_num = $v['reg_num'];
+  if(!$desc || !$spec || !$product_ph || !$produce_date || !$invalid_date || !$uuid){
+    unset($all[$k]);
+  }
+  }
+  if(!$all){
+    return json_error(['msg'=>'导入的文件数据异常']);
+  }
+  $reg_model = new reg; 
+  $goods_model = $this->model_class; 
+  $goods_base_model = new goods_base; 
+  $card_model = new card; 
+  foreach($all as $k=>&$v){
+  $err = [];
+  $desc = $v['desc'];
+  $spec = $v['spec'];
+  $product_ph = $v['product_ph'];
+  $produce_date = $v['produce_date'];
+  $invalid_date = $v['invalid_date'];
+  $uuid = $v['uuid'];
+  $reg_number = $v['reg_num'];
+  $res = $reg_model->find(['reg_number'=>$reg_number],1);
+  $v['reg_id'] = $reg_id = $res['id'];
+  if($desc != $res['title']){
+    $err[] = "产品名称与注册证不一致";
+  }
+  $res = $goods_model->find(['uuid'=>$uuid],1);
+  if($res){
+    $err[] = "唯一码已存在";
+  }
+  $v['is_err'] = false;
+  if($err){
+    $v['err'] = implode("<br>",$err);
+    $v['is_err'] = true;
+  }
+}
+if($all){
+  $all = array_values($all);
+}
+return json_success(['data'=>$all]); 
+~~~
+
+
+
 ### 开源协议 
 
 [Apache License 2.0](LICENSE)

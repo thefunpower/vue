@@ -944,6 +944,65 @@ class Vue
         }
         return $str;
     }
+    /**
+    * 生成导入数据按钮
+    */
+    public function get_import($opt = [])
+    {
+        $success = $opt['success'] ?: 'import_xls_uploaded';
+        $save_url = $opt['save_url'];
+        $table_body = $opt['table_body'];
+        $dialog = $opt['dialog'] ?: "width='80%' top='20px' ";
+        $is_pop = $success."_pop";
+        $pop_list = $success."_list";
+        $save_pop = $success."_save_pop";
+        $url = $opt['upload_url'] ?: $this->upload_url;
+        $parse_url = $opt['parse_url'];
+        $type = $opt['type'] ?: 'primary';
+        $local_url = $opt['local_url'] ?: 'url';
+        $html = "<el-upload  accept='.xls, .xlsx' :on-success='".$success."' action='".$url."' ><el-button type='".$type."' >".
+            ($opt['label'] ?: '导入')
+            ."</el-button></el-upload>";
+        $this->method($success."(res,file,list)", "
+            let furl = res.".$local_url."; 
+            $.post('".$parse_url."',{url:furl},function(res){
+                if(res.code == 0){
+                    app.".$is_pop." = true; 
+                    app.".$pop_list." = res.data;
+                }else{
+                    app.".$pop_list." = [];
+                }
+            },'json');
+        ");
+        $this->data($pop_list, "[]");
+        $this->data($is_pop, false);
+        $pop_html = '
+            <el-dialog '.$dialog.'
+              title="提示"
+              :visible.sync="'.$is_pop.'"  >
+              <el-table
+                :data="'.$pop_list.'"
+                border
+                style="width: 100%">
+                '.$table_body.'
+              </el-table>
+              
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="'.$is_pop.' = false">取 消</el-button>
+                <el-button type="primary" @click="'.$save_pop.'">确 定</el-button>
+              </span>
+            </el-dialog>
+
+        ';
+        $this->method($save_pop."()", " 
+            $.post('".$save_url."',{data:this.".$pop_list."},function(res){
+                ".vue_message()."
+                app.".$is_pop." = false; 
+                app.".$pop_list." = [];
+            },'json');
+        ");
+        return ['html' => $html,'pop_html' => $pop_html];
+    }
 }
 /**
 * 季度
