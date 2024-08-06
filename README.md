@@ -215,7 +215,12 @@ $import = $vue->get_import([
     <el-table-column   prop="desc"  label="产品名称" width=""></el-table-column>
     <el-table-column   prop="reg_num"  label="状态" width="">
          <template slot-scope="scope">
-            
+            <span v-if="scope.row.is_err">
+              <div v-html="scope.row.err" style="color:red;font-size:12px;"></div>
+            </span>
+            <span v-else style="color:green;font-size:12px;">
+                可导入
+            </span>
          </template>
     </el-table-column>
     '
