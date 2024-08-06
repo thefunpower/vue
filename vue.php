@@ -949,6 +949,7 @@ class Vue
     */
     public function get_import($opt = [])
     {
+        $title = $opt['title'] ?: '导入数据';
         $success = $opt['success'] ?: 'import_xls_uploaded';
         $save_url = $opt['save_url'];
         $table_body = $opt['table_body'];
@@ -978,7 +979,7 @@ class Vue
         $this->data($is_pop, false);
         $pop_html = '
             <el-dialog '.$dialog.'
-              title="提示"
+              title="'.$title.'"
               :visible.sync="'.$is_pop.'"  >
               <el-table
                 :data="'.$pop_list.'"
