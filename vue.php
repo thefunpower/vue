@@ -952,6 +952,7 @@ class Vue
         $title = $opt['title'] ?: '导入数据';
         $success = $opt['success'] ?: 'import_xls_uploaded';
         $save_url = $opt['save_url'];
+        $js = $opt['js'];
         $table_body = $opt['table_body'];
         $dialog = $opt['dialog'] ?: "width='80%' top='20px' ";
         $is_pop = $success."_pop";
@@ -978,7 +979,7 @@ class Vue
         $this->data($pop_list, "[]");
         $this->data($is_pop, false);
         $pop_html = '
-            <el-dialog '.$dialog.'
+            <el-dialog :close-on-click-modal="false"	'.$dialog.'
               title="'.$title.'"
               :visible.sync="'.$is_pop.'"  >
               <el-table
@@ -986,20 +987,19 @@ class Vue
                 border
                 style="width: 100%">
                 '.$table_body.'
-              </el-table>
-              
+              </el-table>              
               <span slot="footer" class="dialog-footer">
                 <el-button @click="'.$is_pop.' = false">取 消</el-button>
                 <el-button type="primary" @click="'.$save_pop.'">确 定</el-button>
               </span>
             </el-dialog>
-
         ';
         $this->method($save_pop."()", " 
             $.post('".$save_url."',{data:this.".$pop_list."},function(res){
                 ".vue_message()."
                 app.".$is_pop." = false; 
                 app.".$pop_list." = [];
+                ".$js."
             },'json');
         ");
         return ['html' => $html,'pop_html' => $pop_html];

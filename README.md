@@ -207,6 +207,7 @@ $vue->editor_image_upload_click = "
 
 ~~~
 $import = $vue->get_import([
+    'js'=>" alert('导入成功');";
     'upload_url'=>'/sys/upload/one',
     'parse_url'=>'/product_quality/goods/import_parse',
     'save_url'=>'/product_quality/goods/import_parse_save',
