@@ -979,11 +979,16 @@ class Vue
         ");
         $this->data($pop_list, "[]");
         $this->data($is_pop, false);
+        $this->data("import_pop_table_height", "");
+        $this->created(['load_import_pop_table_height()']);
+        $this->method("load_import_pop_table_height()", "
+            this.import_pop_table_height = window.innerHeight - 230;
+        ");
         $pop_html = '
-            <el-dialog :close-on-click-modal="false"	'.$dialog.'
+            <el-dialog :close-on-click-modal="false"    '.$dialog.'
               title="'.$title.'"
               :visible.sync="'.$is_pop.'"  >
-              <el-table
+              <el-table  :height="import_pop_table_height"
                 :data="'.$pop_list.'"
                 border
                 style="width: 100%">
