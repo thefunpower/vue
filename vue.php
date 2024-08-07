@@ -973,6 +973,7 @@ class Vue
                     app.".$pop_list." = res.data;
                 }else{
                     app.".$pop_list." = [];
+                    ".vue_message()."
                 }
             },'json');
         ");
