@@ -1063,12 +1063,13 @@ function vue_get_last_day($month = '2023-07')
 /**
 * vue message
 */
-function vue_message()
+function vue_message($time = 3)
 {
+    $time = 1000*$time;
     return "  
     if(!app._vue_message){
         app._vue_message = true;
-        _this.\$message({duration:1000,type:res.type,message:res.msg,onClose:function(){
+        _this.\$message({duration:".$time.",type:res.type,message:res.msg,onClose:function(){
             app._vue_message = false;
         }});        
     }
