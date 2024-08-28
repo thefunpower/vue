@@ -324,7 +324,11 @@ class Vue
                         " . $watch_str . "
                     },
                     methods:{" . $methods_str . "$br2}
-                }).mount('" . $this->id . "'); 
+                });
+                if(typeof ElementPlus !== 'undefined'){
+                    app.use(ElementPlus);    
+                }                
+                app.mount('" . $this->id . "');  
             ";
         }
         $vars = '';
