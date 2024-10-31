@@ -665,10 +665,7 @@ class Vue
         $sortable = "sortable" . mt_rand(1000, 9999);
         $this->mounted('', "js:this." . $sortable . "();");
         $this->method($sortable . "()", "js: 
-          /**
-          * creator wechat: sunkangchina 
-          * this is for commercial license,you can't remove it.
-          */
+           
           Sortable.create(document.querySelector('" . $element . "'),{     
             handle:'.handler', 
             onEnd(eve) {   
