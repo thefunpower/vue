@@ -508,7 +508,7 @@ class Vue
                 ajax(url,this.form,function(res){ 
                         console.log(res);
                         _this.\$message({
-                          message: res.msg,
+                          message: res.msg||res.message,
                           type: res.type
                         }); 
                         if(res.code == 0){
@@ -1070,7 +1070,7 @@ function vue_message($time = 3)
     return "  
     if(!app._vue_message){
         app._vue_message = true;
-        _this.\$message({duration:".$time.",type:res.type,message:res.msg,onClose:function(){
+        _this.\$message({duration:".$time.",type:res.type,message:res.msg||res.message,onClose:function(){
             app._vue_message = false;
         }});        
     }
